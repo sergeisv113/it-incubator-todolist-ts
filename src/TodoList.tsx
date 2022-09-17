@@ -21,9 +21,9 @@ export type TodoListPropsTitle = {
 
 export const TodoList: FC<TodoListPropsTitle> = (props) => {
     const [title, setTitle] = useState<string>('')
-const [error, setError] = useState<boolean>(false)
+    const [error, setError] = useState<boolean>(false)
 
-    let taskItems: any =  <span>Tasks list is empty</span>
+    let taskItems: any = <span>Tasks list is empty</span>
     if (props.tasks.length) {
         taskItems = props.tasks.map(task => {
             return (
@@ -44,61 +44,67 @@ const [error, setError] = useState<boolean>(false)
 
     const addTask = () => {
         const trimmedTitle = title.trim()
-        if (trimmedTitle){
+        if (trimmedTitle) {
             props.addTask(trimmedTitle)
-        } else  {
+        } else {
             setError(true)
         }
         setTitle('')
     }
 
-const changeTitle = (e: ChangeEvent<HTMLInputElement>) => {
-        if (error)setError(false)
-    setTitle(e.currentTarget.value)
-}
+    const changeTitle = (e: ChangeEvent<HTMLInputElement>) => {
+        if (error) setError(false)
+        setTitle(e.currentTarget.value)
+    }
 
-const onKeyDownAddTask = (e: KeyboardEvent<HTMLInputElement>) => {
-        if(e.key === 'Enter') addTask()
-}
+    const onKeyDownAddTask = (e: KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') addTask()
+    }
 
-const handlerCreator = (filter: FilterValuesType) => () => props.changeFilter(filter)
-const userMessage = error
-    ? <div style={{color: 'red'}}>Tasks list is empty</div>
-    : <div>Please, create list item</div>
+    const handlerCreator = (filter: FilterValuesType) => () => props.changeFilter(filter)
+    const userMessage = error
+        ? <div style={{color: 'red'}}>Tasks list is empty</div>
+        : <div>Please, create list item</div>
 
-/*const onAllClickHandler = () => props.changeFilter('All')
-const onActiveClickHandler = () => props.changeFilter('Active')
-const onCompletedClickHandler = () => props.changeFilter('Completed')*/
+    /*const onAllClickHandler = () => props.changeFilter('All')
+    const onActiveClickHandler = () => props.changeFilter('Active')
+    const onCompletedClickHandler = () => props.changeFilter('Completed')*/
 
 
     return (
+        <div>
+            <div>
+                <h3>{props.title}</h3>
+
                 <div>
-                    <div>
-                        <h3>{props.title}</h3>
+                    <input
+                        value={title}
+                        onChange={changeTitle}
+                        className={error ? 'error' : ''}
+                        onKeyDown={onKeyDownAddTask}/>
+                    <button onClick={addTask}>+</button>
 
-                        <div>
-                            <input
-                                value={title}
-                                onChange={changeTitle}
-                                className={error ? 'error' : ''}
-                                onKeyDown={onKeyDownAddTask}/>
-                            <button onClick={addTask}>+</button>
-
-                            {error && userMessage}
-                        </div>
-
-                        <ul>
-                            {taskItems}
-                        </ul>
-
-                        <div>
-                            <button className={props.filter === 'All' ? 'btn-active btn' : 'btn'} onClick={handlerCreator('All')}>All</button>
-                            <button className={props.filter === 'Active' ? 'btn-active btn' : 'btn'} onClick={handlerCreator('Active')}>Active</button>
-                            <button
-                                className={props.filter === 'Completed' ? 'btn-active btn' : 'btn'} onClick={handlerCreator('Completed')}>Completed</button>
-                        </div>
-
-                    </div>
+                    {error && userMessage}
                 </div>
-            );
-        }
+
+                <ul>
+                    {taskItems}
+                </ul>
+
+                <div>
+                    <button className={props.filter === 'All' ? 'btn-active btn' : 'btn'}
+                            onClick={handlerCreator('All')}>All
+                    </button>
+                    <button className={props.filter === 'Active' ? 'btn-active btn' : 'btn'}
+                            onClick={handlerCreator('Active')}>Active
+                    </button>
+                    <button
+                        className={props.filter === 'Completed' ? 'btn-active btn' : 'btn'}
+                        onClick={handlerCreator('Completed')}>Completed
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    );
+}
