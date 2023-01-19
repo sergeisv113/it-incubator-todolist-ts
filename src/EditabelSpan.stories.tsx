@@ -19,7 +19,6 @@ export const EditableSpanBaseExample = () => {
                 title={'Start value'}
                 onChange={onChangeCallback}
             />
-
         </>
     )
 }
