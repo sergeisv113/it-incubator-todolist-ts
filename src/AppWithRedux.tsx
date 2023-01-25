@@ -1,29 +1,35 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import './App.css';
-import {TaskType, Todolist} from './Todolist';
+import { Todolist} from './Todolist';
 import {AddItemForm} from "./AddItemForm";
 import {AppBar, Button, Container, Grid, IconButton, Paper, Toolbar, Typography} from "@material-ui/core";
 import {Menu} from "@material-ui/icons";
-import  {AddTaskAC, ChangeTaskStatusAC, ChangeTaskTitleAC, RemoveTaskAC} from "./state/tasks-reducer";
+import {
+    AddTaskAC,
+    AddTaskTC,
+    ChangeTaskStatusAC,
+    ChangeTaskTitleAC,
+    deleteTaskTC,
+    RemoveTaskAC
+} from "./state/tasks-reducer";
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootState} from "./state/store";
 import {
     AddTodolistAC,
     ChangeTodolistFilterAC,
-    ChangeTodolistTitleAC,
-    RemoveTodolistAC
+    ChangeTodolistTitleAC, fetchTodolistsTC, FilterValuesType,
+    RemoveTodolistAC, TodolistDomainType
 } from "./state/todolists-reducer";
+import {TaskStatuses, TaskType, todolistsApi} from "./API/todolists-api";
 
-export type TodoListType = {
+/*export type TodoListType = {
     id: string
     title: string
     filter: FilterValuesType
-}
-export type TaskStateType = {
+}*/
+export type TasksStateType = {
     [key: string]: Array<TaskType>
 }
-
-export type FilterValuesType = "all" | "active" | "completed";
 
 function AppWithRedux() {
     console.log('App is called')
@@ -38,11 +44,16 @@ class component & functional component
 
     //id в отдельн переменн
 const dispatch = useDispatch()//dispatchTasksReducier + dispatchTodolistsReducier
-const todolists = useSelector<AppRootState, Array<TodoListType>>(state =>  state.todolists)
-const tasks = useSelector<AppRootState, TaskStateType>(state => state.tasks)
+const todolists = useSelector<AppRootState, Array<TodolistDomainType>>(state =>  state.todolists)
+const tasks = useSelector<AppRootState, TasksStateType>(state => state.tasks)
 
 /*let todolistId1 = v1()
 let todolistId2 = v1()*/
+    useEffect(() => {
+        dispatch(fetchTodolistsTC())
+    }, [])
+
+
 
 /*    let [todolists] = useReducer(todolistsReducer, [
         {id: todolistId1, title: "What to buy", filter: 'all'},
@@ -69,17 +80,22 @@ let todolistId2 = v1()*/
     //func for task
     //useCallback оборач, т.к => return object, а {} === {} = false all function
     const removeTask = useCallback((id: string, todolistId: string) => {
-        const action = RemoveTaskAC(id, todolistId)
-        dispatch(action)
+        const thunk = deleteTaskTC(id, todolistId)
+        dispatch(thunk)
+        //||
+        //const action = deleteTaskTC(id, todolistId)
+        //         dispatch(action)
+
         //[] тасок для конкретного tdl. Нашли массив
      //   let todolistTasks = tasks[todolistId]// достаем нужный массив по ид
       //  tasks[todolistId] = todolistTasks.filter(t => t.id !== id)//перезапис в этот объкт массив для нужного тдл отфильтрованным массивом
         // setTasks({...tasks})
-    }, [dispatch]);
+    }, []);
 
-    const addTask = useCallback(function (title: string, todolistId: string) {
-        const action = AddTaskAC(title, todolistId)
-        dispatch(action)
+    const addTask = useCallback( (title: string, todolistId: string) => {
+        // const action = AddTaskAC(title, todolistId)
+        const thunk = AddTaskTC(title, todolistId)
+        dispatch(thunk)
         /*const newTask: TaskType = {
           id: v1(), title: title, isDone: false
       }
@@ -92,10 +108,10 @@ let todolistId2 = v1()*/
         // tasks[todolistId] = [task, ...todolistTasks]
         // setTasks({...tasks});
         //в копию, по нужному адрессу положили обновленный массив
-    }, [dispatch])
+    }, [])
 
-    const changeTaskStatus = useCallback((id: string, isDone: boolean, todolistId: string)  => {
-        const action = ChangeTaskStatusAC(id, isDone, todolistId)
+    const changeTaskStatus = useCallback((id: string, status: TaskStatuses, todolistId: string)  => {
+        const action = ChangeTaskStatusAC(id, status, todolistId)
         dispatch(action)
 /*
         let todolistTasks = tasks[todolistId]
