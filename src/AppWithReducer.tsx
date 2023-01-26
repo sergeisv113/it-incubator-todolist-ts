@@ -6,12 +6,12 @@ import {AddItemForm} from "./AddItemForm";
 import {AppBar, Button, Container, Grid, IconButton, Paper, Toolbar, Typography} from "@material-ui/core";
 import {Menu} from "@material-ui/icons";
 import todolistsReducer, {
-    AddTodolistAC,
+    AddTodolistAC, addTodolistsTC,
     ChangeTodolistFilterAC,
     ChangeTodolistTitleAC, FilterValuesType,
     RemoveTodolistAC
 } from "./state/todolists-reducer";
-import tasksReducer, {AddTaskAC, ChangeTaskStatusAC, ChangeTaskTitleAC, RemoveTaskAC} from "./state/tasks-reducer";
+import tasksReducer, {AddTaskAC, ChangeTaskTitleAC, RemoveTaskAC, UpdateTaskAC} from "./state/tasks-reducer";
 import {TaskPriorities, TaskStatuses, TaskType} from "./API/todolists-api";
 
 /*export type TodoListType = {
@@ -68,7 +68,18 @@ let todolistId2 = v1()
     }
 
     function addTask(title: string, todolistId: string) {
-        const action = AddTaskAC(title, todolistId)
+        const action = AddTaskAC({
+            todoListId: todolistId,
+            title: title,
+            status: TaskStatuses.New,
+            addedDate: '',
+            order: 0,
+            priority: 0,
+            id: 'bhsbah',
+            deadline: '',
+            description: '',
+            startDate: '',
+        })
         dispatchTasksReducer(action)
         /*const newTask: TaskType = {
           id: v1(), title: title, isDone: false
@@ -85,7 +96,7 @@ let todolistId2 = v1()
     }
 
     function changeTaskStatus(id: string, status: TaskStatuses, todolistId: string) {
-        const action = ChangeTaskStatusAC(id, status, todolistId)
+        const action = UpdateTaskAC(id, {status}, todolistId)
         dispatchTasksReducer(action)
 /*
         let todolistTasks = tasks[todolistId]
@@ -98,7 +109,7 @@ let todolistId2 = v1()
     }
 
     function changeTaskTitle(id: string, newTitle: string, todolistId: string) {
-        const action = ChangeTaskTitleAC(id, newTitle, todolistId)
+        const action = UpdateTaskAC(id, {title: newTitle}, todolistId)
         dispatchTasksReducer(action)
         /*let todolistTasks = tasks[todolistId]
         let task = todolistTasks.find(tl => tl.id === id);
@@ -132,7 +143,12 @@ let todolistId2 = v1()
     }
 
     function addTodolist(title:string) {
-        const action = AddTodolistAC(title)
+        const action = AddTodolistAC({
+            id: v1(),
+            order: 0,
+            title: title,
+            addedDate: ''
+        })
         dispatchTodolistsReducer(action)
         dispatchTasksReducer(action)
       /*  let todolist: TodoListType = {

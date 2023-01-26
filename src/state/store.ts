@@ -11,7 +11,7 @@ const rootReducer = combineReducers({
     todolists:  Array<TodoListType>
     tasks:   TaskStateType
 }*/
-export  type AppRootState = ReturnType<typeof rootReducer>
+export  type  AppRootState = ReturnType<typeof rootReducer>
 
 export const store = createStore(rootReducer, applyMiddleware(thunkMiddleware))
 // applyMiddleware(thunkMiddleware) if prichodit action, on ee propuskaet in reducer,

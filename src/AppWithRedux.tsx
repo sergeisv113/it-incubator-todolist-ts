@@ -5,9 +5,8 @@ import {AddItemForm} from "./AddItemForm";
 import {AppBar, Button, Container, Grid, IconButton, Paper, Toolbar, Typography} from "@material-ui/core";
 import {Menu} from "@material-ui/icons";
 import {
-    AddTaskAC,
-    AddTaskTC,
-    ChangeTaskStatusAC,
+    addTaskTC,
+     updateTaskTC,
     ChangeTaskTitleAC,
     deleteTaskTC,
     RemoveTaskAC
@@ -15,12 +14,12 @@ import {
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootState} from "./state/store";
 import {
-    AddTodolistAC,
-    ChangeTodolistFilterAC,
+    AddTodolistAC, addTodolistsTC,
+    ChangeTodolistFilterAC, changeTodolistsTitleTC,
     ChangeTodolistTitleAC, fetchTodolistsTC, FilterValuesType,
-    RemoveTodolistAC, TodolistDomainType
+    RemoveTodolistAC, removeTodolistsTC, TodolistDomainType
 } from "./state/todolists-reducer";
-import {TaskStatuses, TaskType, todolistsApi} from "./API/todolists-api";
+import {TaskStatuses, TaskType, todolistsApi, TodolistType} from "./API/todolists-api";
 
 /*export type TodoListType = {
     id: string
@@ -94,7 +93,7 @@ let todolistId2 = v1()*/
 
     const addTask = useCallback( (title: string, todolistId: string) => {
         // const action = AddTaskAC(title, todolistId)
-        const thunk = AddTaskTC(title, todolistId)
+        const thunk = addTaskTC(title, todolistId)
         dispatch(thunk)
         /*const newTask: TaskType = {
           id: v1(), title: title, isDone: false
@@ -111,8 +110,10 @@ let todolistId2 = v1()*/
     }, [])
 
     const changeTaskStatus = useCallback((id: string, status: TaskStatuses, todolistId: string)  => {
-        const action = ChangeTaskStatusAC(id, status, todolistId)
-        dispatch(action)
+        // const action = ChangeTaskStatusAC(id, status, todolistId)
+        // dispatch(action)
+        const thunk = updateTaskTC(id, {status: status}, todolistId)
+        dispatch(thunk)
 /*
         let todolistTasks = tasks[todolistId]
         let task = todolistTasks.find(tl => tl.id === id);
@@ -121,22 +122,24 @@ let todolistId2 = v1()*/
            // setTasks({...tasks})
         }
 */
-    }, [dispatch] )
+    }, [] )
 
     const changeTaskTitle = useCallback((id: string, newTitle: string, todolistId: string) => {
-        const action = ChangeTaskTitleAC(id, newTitle, todolistId)
-        dispatch(action)
+        // const action = ChangeTaskTitleAC(id, newTitle, todolistId)
+        // dispatch(action)
+        const thunk = updateTaskTC(id, {title: newTitle}, todolistId)
+        dispatch(thunk)
         /*let todolistTasks = tasks[todolistId]
         let task = todolistTasks.find(tl => tl.id === id);
         if (task) {
             task.title = newTitle;
             setTasks({...tasks})
         }*/
-    }, [dispatch])
+    }, [])
 
     //func for todolist
-    const changeFilter = useCallback((todolistId: string, value: FilterValuesType ) => {
-        const action = ChangeTodolistFilterAC(todolistId, value )
+    const changeFilter = useCallback((todolistId: string, filter: FilterValuesType ) => {
+        const action = ChangeTodolistFilterAC(todolistId, filter )
         dispatch(action)
 
         /*let todolist = todolists.find(tl => tl.id === todolistId)
@@ -144,22 +147,23 @@ let todolistId2 = v1()*/
             todolist.filter = value
             setTodoList([...todolists])
         }*/
-    }, [dispatch])
+    }, [])
 
     const removeTodolist = useCallback((todolistId: string) => {
-        const action = RemoveTodolistAC(todolistId)
-        dispatch(action)
+        // const action = RemoveTodolistAC(todolistId)
+        const thunk = removeTodolistsTC(todolistId)
+        dispatch(thunk)
 
 
        /* let filteredTodolist = todolists.filter(tl => tl.id !== todolistId)
         setTodoList(filteredTodolist)
         delete tasks[todolistId]
         setTasks({...tasks})*/
-    }, [dispatch])
+    }, [])
 
-    const addTodolist = useCallback((title:string) => {
-        const action = AddTodolistAC(title)
-        dispatch(action)
+    const addTodolist = useCallback((title: string) => {
+        const thunk = addTodolistsTC(title)
+        dispatch(thunk)
 
       /*  let todolist: TodoListType = {
             id: v1(),
@@ -171,18 +175,20 @@ let todolistId2 = v1()*/
             ...tasks,
             [todolist.id]: [],
         })*/
-    }, [dispatch]);//useCallback оборач, т.к => return object, а {} === {} = false
+    }, []);//useCallback оборач, т.к => return object, а {} === {} = false
 
     const changeTodolistTitle = useCallback(function (todolistId: string, newTitle: string) {
-        const action = ChangeTodolistTitleAC(todolistId, newTitle)
-        dispatch(action)
+        // const action = ChangeTodolistTitleAC(todolistId, newTitle)
+        // dispatch(action)
+        const thunk = changeTodolistsTitleTC(todolistId, newTitle)
+        dispatch(thunk)
 
        /* const todolist = todolists.find(tl => tl.id === id)
         if (todolist) {
             todolist.title = newTitle
             setTodoList([...todolists])
         }*/
-    }, [dispatch])
+    }, [])
 
     return (
         <div className="App">

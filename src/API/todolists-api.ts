@@ -51,15 +51,6 @@ export const settings = {
         'API-KEY': '6b81f6a1-5ebf-4798-9547-d8f4d6c51bfc'
     }
 }
-const instance = axios.create({
-    baseURL: 'https://social-network.samuraijs.com/api/1.1/',
-   /* withCredentials: true,//cuckies loginization || api key
-    headers: {
-        'API-KEY': '6b81f6a1-5ebf-4798-9547-d8f4d6c51bfc'
-    }*/
-    //  ||
-    ...settings
-})
 export type UpdateTaskModelType = {
     description: string
     title: string
@@ -69,6 +60,18 @@ export type UpdateTaskModelType = {
     startDate: string | null
     deadline: string | null
 }
+
+
+const instance = axios.create({
+    baseURL: 'https://social-network.samuraijs.com/api/1.1/',
+   /* withCredentials: true,//cuckies loginization || api key
+    headers: {
+        'API-KEY': '6b81f6a1-5ebf-4798-9547-d8f4d6c51bfc'
+    }*/
+    //  ||
+    ...settings
+})
+
 
 
 export const todolistsApi = {
@@ -95,7 +98,8 @@ export const todolistsApi = {
         return   instance.delete<ResponseType>(`todo-lists/${todolistId}/tasks/${taskId}`)
     },
     createTask(todolistId: string, taskTitle: string) {
-        return   instance.post<ResponseType<TaskType>>(`todo-lists/${todolistId}/tasks/`, {title: taskTitle})
+        return   instance.post<ResponseType<{item: TaskType }>>(`todo-lists/${todolistId}/tasks/`, {title: taskTitle})
+        // return   instance.post<ResponseType< TaskType >>(`todo-lists/${todolistId}/tasks/`, {title: taskTitle})
     },
     updateTask(todolistId: string, taskId: string, model: UpdateTaskModelType) {
         return   instance.put<ResponseType<TaskType>>(`todo-lists/${todolistId}/tasks/${taskId}`, model)
