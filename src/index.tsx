@@ -2,10 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
-import AppWithRedux from "./AppWithRedux";
-import {store} from "./state/store";
+import AppWithRedux from "./app/AppWithRedux";
+import {store} from "./API/store";
 import {Provider} from "react-redux";
-import AppWithReducer from "./AppWithReducer";
+import AppWithReducer from "./trash/AppWithReducer";
 
 ReactDOM.render(
    <Provider store={store}>
