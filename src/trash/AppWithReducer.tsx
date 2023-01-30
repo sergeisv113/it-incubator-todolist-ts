@@ -1,37 +1,33 @@
-import React, {useCallback, useEffect} from 'react';
-import './App.css';
-import { Todolist} from './Todolist';
-import {AddItemForm} from "./AddItemForm";
+import React, {useReducer, useState} from 'react';
+import '../app/App.css';
+import { Todolist} from '../features/TodolistsList/Todolist/Todolist';
+import {v1} from 'uuid';
 import {AppBar, Button, Container, Grid, IconButton, Paper, Toolbar, Typography} from "@material-ui/core";
 import {Menu} from "@material-ui/icons";
 import {
-    addTaskTC,
-     updateTaskTC,
-    ChangeTaskTitleAC,
-    deleteTaskTC,
-    RemoveTaskAC
-} from "./state/tasks-reducer";
-import {useDispatch, useSelector} from "react-redux";
-import {AppRootState} from "./state/store";
-import {
-    AddTodolistAC, addTodolistsTC,
-    ChangeTodolistFilterAC, changeTodolistsTitleTC,
-    ChangeTodolistTitleAC, fetchTodolistsTC, FilterValuesType,
-    RemoveTodolistAC, removeTodolistsTC, TodolistDomainType
-} from "./state/todolists-reducer";
-import {TaskStatuses, TaskType, todolistsApi, TodolistType} from "./API/todolists-api";
+    addTodolistAC,
+    changeTodolistFilterAC,
+    changeTodolistTitleAC, FilterValuesType,
+    removeTodolistAC, todolistsReducer,
+} from "../features/TodolistsList/todolists-reducer";
+import tasksReducer, {
+    addTaskAC,
+    removeTaskAC,
+    updateTaskAC,
+} from "../features/TodolistsList/tasks-reducer";
+import {TaskPriorities, TaskStatuses, TaskType} from "../API/todolists-api";
+import {AddItemForm} from "../components/AddItemForm/AddItemForm";
 
 /*export type TodoListType = {
     id: string
     title: string
     filter: FilterValuesType
 }*/
-export type TasksStateType = {
+export type TaskStateType = {
     [key: string]: Array<TaskType>
 }
 
-function AppWithRedux() {
-    console.log('App is called')
+function AppWithReducer() {
 /*CLI
 GUI => CRUD
 C+func
@@ -42,59 +38,53 @@ class component & functional component
     BiznesLogick BLL: data+functional logick*/
 
     //id в отдельн переменн
-const dispatch = useDispatch()//dispatchTasksReducier + dispatchTodolistsReducier
-const todolists = useSelector<AppRootState, Array<TodolistDomainType>>(state =>  state.todolists)
-const tasks = useSelector<AppRootState, TasksStateType>(state => state.tasks)
+let todolistId1 = v1()
+let todolistId2 = v1()
 
-/*let todolistId1 = v1()
-let todolistId2 = v1()*/
-    useEffect(() => {
-        dispatch(fetchTodolistsTC())
-    }, [])
-
-
-
-/*    let [todolists] = useReducer(todolistsReducer, [
-        {id: todolistId1, title: "What to buy", filter: 'all'},
-        {id: todolistId2, title: "What to learn" , filter: 'all'}
+    let [todolists, dispatchTodolistsReducer] = useReducer(todolistsReducer, [
+        {id: todolistId1, title: "What to buy", filter: 'all', order: 0, addedDate: '',},
+        {id: todolistId2, title: "What to learn" , filter: 'all', order: 0, addedDate: ''}
     ]);
 
-    let [tasks] = useReducer(tasksReducer, {
+    let [tasks, dispatchTasksReducer] = useReducer(tasksReducer, {
         [todolistId1]: [
-            {id: v1(), title: "HTML&CSS", isDone: true},
-            {id: v1(), title: "JS", isDone: true},
-            {id: v1(), title: "ReactJS", isDone: false},
-            {id: v1(), title: "Rest API", isDone: false},
-            {id: v1(), title: "GraphQL", isDone: false},
+            {id: v1(), title: "JS", status: TaskStatuses.Completed, todoListId: todolistId1, startDate: '', description: '', deadline: '', addedDate: '' , order: 0, priority: TaskPriorities.Hi},
+            {id: v1(), title: "ReactJS", status: TaskStatuses.New, todoListId: todolistId1, startDate: '', description: '', deadline: '', addedDate: '' , order: 0, priority: TaskPriorities.Low},
+            {id: v1(), title: "Rest API", status: TaskStatuses.New, todoListId: todolistId1, startDate: '', description: '', deadline: '', addedDate: '' , order: 0, priority: TaskPriorities.Hi},
+            {id: v1(), title: "GraphQL", status: TaskStatuses.New, todoListId: todolistId1, startDate: '', description: '', deadline: '', addedDate: '' , order: 0, priority: TaskPriorities.Middle},
         ],
         [todolistId2]: [
-            {id: v1(), title: "Book", isDone: false},
-            {id: v1(), title: "Milk", isDone: true},
-            {id: v1(), title: "Carrot", isDone: false},
+            {id: v1(), title: "Book", status: TaskStatuses.New, todoListId: todolistId2, startDate: '', description: '', deadline: '', addedDate: '' , order: 0, priority: TaskPriorities.Low},
+            {id: v1(), title: "Milk", status: TaskStatuses.Completed, todoListId: todolistId2, startDate: '', description: '', deadline: '', addedDate: '' , order: 0, priority: TaskPriorities.Middle},
+            {id: v1(), title: "Carrot", status: TaskStatuses.New, todoListId: todolistId2, startDate: '', description: '', deadline: '', addedDate: '' , order: 0, priority: TaskPriorities.Hi},
         ]
-    });*/
-
+    });
 
     // DELETE
     //func for task
-    //useCallback оборач, т.к => return object, а {} === {} = false all function
-    const removeTask = useCallback((id: string, todolistId: string) => {
-        const thunk = deleteTaskTC(id, todolistId)
-        dispatch(thunk)
-        //||
-        //const action = deleteTaskTC(id, todolistId)
-        //         dispatch(action)
-
+    function removeTask(id: string, todolistId: string) {
+        const action = removeTaskAC(id, todolistId)
+        dispatchTasksReducer(action)
         //[] тасок для конкретного tdl. Нашли массив
      //   let todolistTasks = tasks[todolistId]// достаем нужный массив по ид
       //  tasks[todolistId] = todolistTasks.filter(t => t.id !== id)//перезапис в этот объкт массив для нужного тдл отфильтрованным массивом
         // setTasks({...tasks})
-    }, []);
+    }
 
-    const addTask = useCallback( (title: string, todolistId: string) => {
-        // const action = AddTaskAC(title, todolistId)
-        const thunk = addTaskTC(title, todolistId)
-        dispatch(thunk)
+    function addTask(title: string, todolistId: string) {
+        const action = addTaskAC({
+            todoListId: todolistId,
+            title: title,
+            status: TaskStatuses.New,
+            addedDate: '',
+            order: 0,
+            priority: 0,
+            id: 'bhsbah',
+            deadline: '',
+            description: '',
+            startDate: '',
+        })
+        dispatchTasksReducer(action)
         /*const newTask: TaskType = {
           id: v1(), title: title, isDone: false
       }
@@ -107,13 +97,11 @@ let todolistId2 = v1()*/
         // tasks[todolistId] = [task, ...todolistTasks]
         // setTasks({...tasks});
         //в копию, по нужному адрессу положили обновленный массив
-    }, [])
+    }
 
-    const changeTaskStatus = useCallback((id: string, status: TaskStatuses, todolistId: string)  => {
-        // const action = ChangeTaskStatusAC(id, status, todolistId)
-        // dispatch(action)
-        const thunk = updateTaskTC(id, {status: status}, todolistId)
-        dispatch(thunk)
+    function changeTaskStatus(id: string, status: TaskStatuses, todolistId: string) {
+        const action = updateTaskAC(id, {status}, todolistId)
+        dispatchTasksReducer(action)
 /*
         let todolistTasks = tasks[todolistId]
         let task = todolistTasks.find(tl => tl.id === id);
@@ -122,49 +110,51 @@ let todolistId2 = v1()*/
            // setTasks({...tasks})
         }
 */
-    }, [] )
+    }
 
-    const changeTaskTitle = useCallback((id: string, newTitle: string, todolistId: string) => {
-        // const action = ChangeTaskTitleAC(id, newTitle, todolistId)
-        // dispatch(action)
-        const thunk = updateTaskTC(id, {title: newTitle}, todolistId)
-        dispatch(thunk)
+    function changeTaskTitle(id: string, newTitle: string, todolistId: string) {
+        const action = updateTaskAC(id, {title: newTitle}, todolistId)
+        dispatchTasksReducer(action)
         /*let todolistTasks = tasks[todolistId]
         let task = todolistTasks.find(tl => tl.id === id);
         if (task) {
             task.title = newTitle;
             setTasks({...tasks})
         }*/
-    }, [])
+    }
 
     //func for todolist
-    const changeFilter = useCallback((todolistId: string, filter: FilterValuesType ) => {
-        const action = ChangeTodolistFilterAC(todolistId, filter )
-        dispatch(action)
+    function changeFilter(todolistId: string, filter: FilterValuesType, ) {
+        const action = changeTodolistFilterAC(todolistId, filter )
+        dispatchTodolistsReducer(action)
 
         /*let todolist = todolists.find(tl => tl.id === todolistId)
         if (todolist) {
             todolist.filter = value
             setTodoList([...todolists])
         }*/
-    }, [])
+    }
 
-    const removeTodolist = useCallback((todolistId: string) => {
-        // const action = RemoveTodolistAC(todolistId)
-        const thunk = removeTodolistsTC(todolistId)
-        dispatch(thunk)
-
+    function removeTodolist(todolistId: string) {
+        const action = removeTodolistAC(todolistId)
+        dispatchTodolistsReducer(action)
+        dispatchTasksReducer(action)
 
        /* let filteredTodolist = todolists.filter(tl => tl.id !== todolistId)
         setTodoList(filteredTodolist)
         delete tasks[todolistId]
         setTasks({...tasks})*/
-    }, [])
+    }
 
-    const addTodolist = useCallback((title: string) => {
-        const thunk = addTodolistsTC(title)
-        dispatch(thunk)
-
+    function addTodolist(title:string) {
+        const action = addTodolistAC({
+            id: v1(),
+            order: 0,
+            title: title,
+            addedDate: ''
+        })
+        dispatchTodolistsReducer(action)
+        dispatchTasksReducer(action)
       /*  let todolist: TodoListType = {
             id: v1(),
             title: title,
@@ -175,20 +165,18 @@ let todolistId2 = v1()*/
             ...tasks,
             [todolist.id]: [],
         })*/
-    }, []);//useCallback оборач, т.к => return object, а {} === {} = false
+    }
 
-    const changeTodolistTitle = useCallback(function (todolistId: string, newTitle: string) {
-        // const action = ChangeTodolistTitleAC(todolistId, newTitle)
-        // dispatch(action)
-        const thunk = changeTodolistsTitleTC(todolistId, newTitle)
-        dispatch(thunk)
+    function changeTodolistTitle(todolistId: string, newTitle: string) {
+        const action = changeTodolistTitleAC(todolistId, newTitle)
+        dispatchTodolistsReducer(action)
 
        /* const todolist = todolists.find(tl => tl.id === id)
         if (todolist) {
             todolist.title = newTitle
             setTodoList([...todolists])
         }*/
-    }, [])
+    }
 
     return (
         <div className="App">
@@ -213,15 +201,14 @@ let todolistId2 = v1()*/
                <Grid container spacing={5}>
                {
                    todolists.map((tl) => {
-                       let allTodolistTasks = tasks[tl.id]
-                       let tasksForTodolist = allTodolistTasks
+                       let tasksForTodolist = tasks[tl.id]
 
-                 /*      if (tl.filter === "active") {
-                           tasksForTodolist = tasksForTodolist.filter(tl => !tl.isDone);
+                       if (tl.filter === "active") {
+                           tasksForTodolist = tasksForTodolist.filter(t => t.status === TaskStatuses.New);
                        }
                        if (tl.filter === "completed") {
-                           tasksForTodolist = tasksForTodolist.filter(tl => tl.isDone === true);
-                       }*/// in todolist, что бы при фильтрации не перерисов каждый раз all Todolist
+                           tasksForTodolist = tasksForTodolist.filter(t => t.status === TaskStatuses.Completed);
+                       }
                        return   <Grid item>
                                 <Paper style={{padding: '10px'}}>
                                     <Todolist id={tl.id}
@@ -236,6 +223,7 @@ let todolistId2 = v1()*/
                                               removeTodolist={removeTodolist}
                                               filter={tl.filter}
                                               changeTodolistTitle={changeTodolistTitle}
+
                                     />
                                 </Paper>
                        </Grid>
@@ -248,5 +236,4 @@ let todolistId2 = v1()*/
     );
 }
 
-export default AppWithRedux;
-// all callback оборач в useCallback если он передается в component, но если передается в елемент(button onClick) , то нет!!, a all component оборач в React.memo
+export default AppWithReducer;
