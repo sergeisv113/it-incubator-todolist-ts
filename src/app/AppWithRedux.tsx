@@ -3,7 +3,7 @@ import './App.css';
 import {AppBar, Button, Container, IconButton, LinearProgress, Toolbar, Typography} from "@material-ui/core";
 import {Menu} from "@material-ui/icons";
 import {TodolistsList} from "../features/TodolistsList/TodolistsList";
-import CustomizedSnackbars from "../components/ErrorSnackBar/ErrorSnackBar";
+import {ErrorSnackbars} from "../components/ErrorSnackbars/ErrorSnackBar";
 
 /*export type TodoListType = {
     id: string
@@ -27,7 +27,9 @@ class component & functional component
 
     return (
         <div className="App">
-            <CustomizedSnackbars/>
+
+            <ErrorSnackbars/>
+
             <AppBar position={'static'}>
                 <Toolbar>
                     <IconButton edge={'start'} color={"inherit"} aria-label={'menu'}>
@@ -39,7 +41,7 @@ class component & functional component
                     <Button color={'inherit'}>Login</Button>
                 </Toolbar>
 
-                <LinearProgress/>
+                <LinearProgress color={'secondary'}/>
 
             </AppBar>
 

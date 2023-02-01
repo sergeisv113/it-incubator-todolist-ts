@@ -28,6 +28,10 @@ const initialGlobalState: AppRootState = {
             {id: v1(), title: "Milk", status: TaskStatuses.Completed, todoListId: 'todolistId2', startDate: '', description: '', deadline: '', addedDate: '' , order: 0, priority: TaskPriorities.Middle},
             {id: v1(), title: "Carrot", status: TaskStatuses.New, todoListId: 'todolistId2', startDate: '', description: '', deadline: '', addedDate: '' , order: 0, priority: TaskPriorities.Hi},
         ]
+    },
+    app: {
+        error: null,
+        status: 'idle'
     }
 }
 export const storyBookStore = createStore(rootReducer, initialGlobalState)
