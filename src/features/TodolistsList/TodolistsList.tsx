@@ -15,6 +15,7 @@ import {TaskStatuses, TaskType} from "../../API/todolists-api";
 import {Grid, Paper} from "@material-ui/core";
 import {AddItemForm} from "../../components/AddItemForm/AddItemForm";
 import {Todolist} from "./Todolist/Todolist";
+import {useAppDispatch, useAppSelector} from "../../hooks/hooks";
 
 type TodolistsListPropsType = {
     // todolist: Array<TodolistDomainType>
@@ -23,9 +24,13 @@ export type TasksStateType = {
     [key: string]: Array<TaskType>
 }
 export const TodolistsList: React.FC<TodolistsListPropsType> = (props) => {
-    const dispatch = useDispatch()//dispatchTasksReducier + dispatchTodolistsReducier
-    const todolists = useSelector<AppRootState, Array<TodolistDomainType>>(state => state.todolists)
-    const tasks = useSelector<AppRootState, TasksStateType>(state => state.tasks)
+    const dispatch = useAppDispatch()//dispatchTasksReducier + dispatchTodolistsReducier
+
+
+    /*const todolists = useSelector<AppRootState, Array<TodolistDomainType>>(state => state.todolists)
+    const tasks = useSelector<AppRootState, TasksStateType>(state => state.tasks)*/
+    const todolists = useAppSelector(state => state.todolists)
+    const tasks = useAppSelector(state => state.tasks)
 
 
     useEffect(() => {

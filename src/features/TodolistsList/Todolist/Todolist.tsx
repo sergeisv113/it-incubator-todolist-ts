@@ -8,6 +8,7 @@ import {useDispatch} from "react-redux";
 import {fetchTasksTC} from "../tasks-reducer";
 import {EditableSpan} from "../../../components/EditableSpan/EditableSpan";
 import {AddItemForm} from "../../../components/AddItemForm/AddItemForm";
+import {useAppDispatch} from "../../../hooks/hooks";
 
 /*export type TaskType = {
     id: string
@@ -32,7 +33,9 @@ type PropsType = {
 export const Todolist = React.memo(function(props: PropsType)  {
     console.log('Todolist is called')
 //zapros tasks from DB
-   const dispatch = useDispatch()
+
+   const dispatch = useAppDispatch()
+
     useEffect(() => {
         dispatch(fetchTasksTC(props.id))//kinkretnij todolist
     }, [])
@@ -52,12 +55,13 @@ export const Todolist = React.memo(function(props: PropsType)  {
 
 
 
-    let tasksForTodolist = props.tasks;
-    if (props.filter === "active") {
-        tasksForTodolist = props.tasks.filter(t => t.status === TaskStatuses.New);
+    let tasksForTodolist = props.tasks
+
+    if (props.filter === 'active') {
+        tasksForTodolist = props.tasks.filter(t => t.status === TaskStatuses.New)
     }
-    if (props.filter === "completed") {
-        tasksForTodolist = props.tasks.filter(t => t.status === TaskStatuses.Completed);
+    if (props.filter === 'completed') {
+        tasksForTodolist = props.tasks.filter(t => t.status === TaskStatuses.Completed)
     }
 
     return <div>
@@ -71,7 +75,7 @@ export const Todolist = React.memo(function(props: PropsType)  {
         <AddItemForm addItem={addTask}/>
         <div>
             {
-                props.tasks.map(t => {
+                tasksForTodolist.map(t => {
                     //create component => checkbox
                   /*  const onClickHandler = () => props.removeTask(t.id, props.id)
                     const onChangeStatusHandler = (e: ChangeEvent<HTMLInputElement>) => {

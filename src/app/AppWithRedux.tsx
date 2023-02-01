@@ -3,6 +3,7 @@ import './App.css';
 import {AppBar, Button, Container, IconButton, LinearProgress, Toolbar, Typography} from "@material-ui/core";
 import {Menu} from "@material-ui/icons";
 import {TodolistsList} from "../features/TodolistsList/TodolistsList";
+import CustomizedSnackbars from "../components/ErrorSnackBar/ErrorSnackBar";
 
 /*export type TodoListType = {
     id: string
@@ -26,6 +27,7 @@ class component & functional component
 
     return (
         <div className="App">
+            <CustomizedSnackbars/>
             <AppBar position={'static'}>
                 <Toolbar>
                     <IconButton edge={'start'} color={"inherit"} aria-label={'menu'}>
