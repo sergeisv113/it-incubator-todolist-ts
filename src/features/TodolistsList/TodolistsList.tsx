@@ -19,11 +19,14 @@ import {useAppDispatch, useAppSelector} from "../../hooks/hooks";
 
 type TodolistsListPropsType = {
     // todolist: Array<TodolistDomainType>
+    demo?: boolean
 }
 export type TasksStateType = {
     [key: string]: Array<TaskType>
 }
-export const TodolistsList: React.FC<TodolistsListPropsType> = (props) => {
+
+
+export const TodolistsList: React.FC<TodolistsListPropsType> = ({demo = false}) => {
     const dispatch = useAppDispatch()//dispatchTasksReducier + dispatchTodolistsReducier
 
 
@@ -34,6 +37,9 @@ export const TodolistsList: React.FC<TodolistsListPropsType> = (props) => {
 
 
     useEffect(() => {
+        if (demo) {
+            return
+        }
         dispatch(fetchTodolistsTC())
     }, [])
 
@@ -166,17 +172,20 @@ export const TodolistsList: React.FC<TodolistsListPropsType> = (props) => {
                     return <Grid item key={tl.id}>
                         <Paper style={{padding: '10px'}}>
                             <Todolist
-                                id={tl.id}
-                                title={tl.title}
+                                todolist={tl}
+                                // id={tl.id}
+                                // title={tl.title}
+                                // filter={tl.filter}
+
                                 tasks={allTodolistTasks}
                                 removeTask={removeTask}
                                 changeFilter={changeFilter}
                                 addTask={addTask}
                                 changeTaskStatus={changeTaskStatus}
-                                filter={tl.filter}
                                 removeTodolist={removeTodolist}
                                 changeTaskTitle={changeTaskTitle}
                                 changeTodolistTitle={changeTodolistTitle}
+                                demo={demo}
                             />
                         </Paper>
                     </Grid>

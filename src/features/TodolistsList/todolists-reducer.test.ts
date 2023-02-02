@@ -14,18 +14,18 @@ beforeEach(() => {
     todolistId1 = v1()
     todolistId2 = v1()
      startState = [
-        {id: todolistId1, title: "What to learn", filter: 'all', order: 0, addedDate: ''},
-        {id: todolistId2, title: "What to buy" , filter: 'all', order: 0, addedDate: ''}
+        {id: todolistId1, title: "What to learn", filter: 'all',entityStatus: "idle", order: 0, addedDate: ''},
+        {id: todolistId2, title: "What to buy" , filter: 'all',entityStatus: "idle", order: 0, addedDate: ''}
     ]
 })
 
     test('correct todolist should be removed', () => {
-    let todolistId1 = v1()
+ /*   let todolistId1 = v1()
     let todolistId2 = v1()
 
     let startState: Array<TodolistDomainType> = [
         {id: todolistId1, title: "What to learn", filter: 'all', order: 0, addedDate: ''},
-        {id: todolistId2, title: "What to buy" , filter: 'all', order: 0, addedDate: ''}    ]
+        {id: todolistId2, title: "What to buy" , filter: 'all', order: 0, addedDate: ''}    ]*/
   /*  const action: RemoveTodolistActionType = {
         type: 'REMOVE-TODOLIST',
         id: todolistId1,
@@ -70,9 +70,9 @@ test('correct todolist change its name', () => {
 
     let newTodolistTitle = 'New Todolist'
 
-    const startState: Array<TodolistDomainType> = [
+ /*   const startState: Array<TodolistDomainType> = [
         {id: todolistId1, title: "What to learn", filter: 'all', order: 0, addedDate: ''},
-        {id: todolistId2, title: "What to buy" , filter: 'all', order: 0, addedDate: ''}    ]
+        {id: todolistId2, title: "What to buy" , filter: 'all', order: 0, addedDate: ''}    ]*/
   /*  const action: ChangeTodolistTitleActionType = {
         type: 'CHANGE-TODOLIST-TITLE',
         id: todolistId2,
@@ -90,9 +90,9 @@ test('correct filter of todolist should be  changed', () => {
 
     let newFilter: FilterValuesType = "completed"
 
-    const startState: Array<TodolistDomainType> = [
-        {id: todolistId1, title: "What to learn", filter: 'all', order: 0, addedDate: ''},
-        {id: todolistId2, title: "What to buy" , filter: 'all', order: 0, addedDate: ''}    ]
+    // const startState: Array<TodolistDomainType> = [
+      /*  {id: todolistId1, title: "What to learn", filter: 'all', order: 0, addedDate: ''},
+        {id: todolistId2, title: "What to buy" , filter: 'all', order: 0, addedDate: ''}    ]*/
   /*  const action: ChangeTodolistFilterActionType = {
         type: 'CHANGE-TODOLIST-FILTER',
         id: todolistId2,

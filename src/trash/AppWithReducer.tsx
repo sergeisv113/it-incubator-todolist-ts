@@ -42,8 +42,8 @@ let todolistId1 = v1()
 let todolistId2 = v1()
 
     let [todolists, dispatchTodolistsReducer] = useReducer(todolistsReducer, [
-        {id: todolistId1, title: "What to buy", filter: 'all', order: 0, addedDate: '',},
-        {id: todolistId2, title: "What to learn" , filter: 'all', order: 0, addedDate: ''}
+        {id: todolistId1, title: "What to buy", filter: 'all',entityStatus: "idle", order: 0, addedDate: '',},
+        {id: todolistId2, title: "What to learn" , filter: 'all',entityStatus: "idle", order: 0, addedDate: ''}
     ]);
 
     let [tasks, dispatchTasksReducer] = useReducer(tasksReducer, {
@@ -211,9 +211,13 @@ let todolistId2 = v1()
                        }
                        return   <Grid item>
                                 <Paper style={{padding: '10px'}}>
-                                    <Todolist id={tl.id}
+                                    <Todolist
+                                               todolist={tl}
+                                              // id={tl.id}
+                                              // filter={tl.filter}
+                                              // title={tl.title}
+
                                               key={tl.id}
-                                              title={tl.title}
                                               tasks={tasksForTodolist}
                                               removeTask={removeTask}
                                               changeFilter={changeFilter}
@@ -221,7 +225,6 @@ let todolistId2 = v1()
                                               changeTaskStatus={changeTaskStatus}
                                               changeTaskTitle={changeTaskTitle}
                                               removeTodolist={removeTodolist}
-                                              filter={tl.filter}
                                               changeTodolistTitle={changeTodolistTitle}
 
                                     />

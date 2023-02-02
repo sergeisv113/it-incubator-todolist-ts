@@ -1,7 +1,8 @@
 import {v1} from "uuid";
 import {todolistsApi, TodolistType} from "../../API/todolists-api";
 import {Dispatch} from "redux";
-import {AppActionType, AppThunkType} from "../../API/store";
+import { AppThunkType} from "../../API/store";
+import {RequestStatusType, setStatusErrorAC} from "../../app/app-reducer";
 
 /* type RemoveTodolistActionType = {
     type: 'REMOVE-TODOLIST',
@@ -51,7 +52,7 @@ export const todolistsReducer = (state: Array<TodolistDomainType> = initialState
             }, ...state]*/
             // const newTodolist: TodolistDomainType = {...action.todolist, filter: "all"}
             // return [newTodolist, ...state]
-            return [{...action.todolist, filter: "all"}, ...state]
+            return [{...action.todolist, filter: "all", entityStatus: "idle" }, ...state]
         }
         case 'CHANGE-TODOLIST-TITLE': {
             /*const todolist = state.find(tl => tl.id === action.id)
@@ -71,7 +72,7 @@ export const todolistsReducer = (state: Array<TodolistDomainType> = initialState
             return state.map(tl => tl.id === action.id ? {...tl, filter: action.filter} : tl)
         }
         case 'SET-TODOLISTS':
-            return action.todolists.map(tl => ({...tl, filter: "all"}))
+            return action.todolists.map(tl => ({...tl, filter: "all", entityStatus: "idle"}))
 
         default:
             // throw new Error('Error')
@@ -115,9 +116,12 @@ export const setTodolistsAC = (todolists: Array<TodolistType>) => ({type: "SET-T
 //thunc-creator
 
 export const fetchTodolistsTC = (): AppThunkType => dispatch => {
+    dispatch(setStatusErrorAC('loading'))// pokaz progress zagruzki
+
         todolistsApi.getTodolists()
             .then((res) => {
                 dispatch(setTodolistsAC(res.data))
+                dispatch(setStatusErrorAC('succeeded'))// ne pokaz progress zagruzki
             })
 }
 
@@ -138,9 +142,12 @@ export const removeTodolistsTC = (todolistId: string): AppThunkType => dispatch 
 }
 
 export const addTodolistsTC = (title: string): AppThunkType => dispatch => {
-        todolistsApi.createTodolists(title)
+    dispatch(setStatusErrorAC('loading'))// pokaz progress zagruzki
+
+    todolistsApi.createTodolists(title)
             .then((res) => {
                 dispatch(addTodolistAC(res.data.data.item))
+                dispatch(setStatusErrorAC('succeeded'))// ne pokaz progress zagruzki
             })
 }
 
@@ -177,6 +184,7 @@ export type TodolistsActionType =
 export type FilterValuesType = "all" | "active" | "completed";
 export type TodolistDomainType = TodolistType & {
     filter: FilterValuesType
+    entityStatus: RequestStatusType
 }
 
 export default todolistsReducer

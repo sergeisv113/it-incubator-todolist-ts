@@ -2,7 +2,7 @@ import {applyMiddleware, combineReducers,  legacy_createStore as createStore} fr
 import tasksReducer, {TasksActionType} from "../features/TodolistsList/tasks-reducer";
 import todolistsReducer, {TodolistsActionType} from "../features/TodolistsList/todolists-reducer";
 import thunkMiddleware, {ThunkAction, ThunkDispatch} from "redux-thunk";
-import {appReducer} from "../app/app-reducer";
+import {AppActionType, appReducer} from "../app/app-reducer";
 
 const rootReducer = combineReducers({
     todolists: todolistsReducer,
@@ -14,12 +14,14 @@ const rootReducer = combineReducers({
 export  type  AppRootState = ReturnType<typeof store.getState>
 
 //types all action for App
- export type AppActionType = TodolistsActionType | TasksActionType
+ export type AppAllActionType = TodolistsActionType
+     | TasksActionType
+     | AppActionType
 
-export type AppDispatch = ThunkDispatch<AppRootState, unknown, AppActionType>
+export type AppDispatch = ThunkDispatch<AppRootState, unknown, AppAllActionType>
 
 //universal thunk types
-export type AppThunkType<ReturnType = void> = ThunkAction<ReturnType, AppRootState, unknown, AppActionType>
+export type AppThunkType<ReturnType = void> = ThunkAction<ReturnType, AppRootState, unknown, AppAllActionType>
 
 export const store = createStore(rootReducer, applyMiddleware(thunkMiddleware))
 // applyMiddleware(thunkMiddleware) if prichodit action, on ee propuskaet in reducer,

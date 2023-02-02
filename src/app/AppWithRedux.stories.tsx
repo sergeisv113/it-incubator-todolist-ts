@@ -18,5 +18,5 @@ export const AppWithReduxBaseExample = () => {
     /*return <Provider store={store}>
                <AppWithRedux/>
            </Provider>*/
-    return  <AppWithRedux/>
+    return  <AppWithRedux demo={true}/>
 }

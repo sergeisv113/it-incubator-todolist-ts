@@ -33,8 +33,8 @@ let todolistId1 = v1()
 let todolistId2 = v1()
 
     let [todolists, setTodoList] = useState<Array<TodolistDomainType>>([
-        {id: todolistId1, title: "What to buy", filter: 'all', order: 0, addedDate: ''},
-        {id: todolistId2, title: "What to learn" , filter: 'all', order: 0, addedDate: ''}
+        {id: todolistId1, title: "What to buy", filter: 'all',entityStatus: "idle", order: 0, addedDate: ''},
+        {id: todolistId2, title: "What to learn" , filter: 'all',entityStatus: "idle", order: 0, addedDate: ''}
     ]);
 
     let [tasks, setTasks] = useState<TaskStateType>({
@@ -119,7 +119,8 @@ let todolistId2 = v1()
             title: title,
             filter: "all",
             addedDate: '',
-            order: 0
+            order: 0,
+            entityStatus: "idle"
         }
         setTodoList([todolist, ...todolists])
         setTasks({
@@ -169,9 +170,13 @@ let todolistId2 = v1()
                        }
                        return   <Grid item>
                                 <Paper style={{padding: '10px'}}>
-                                    <Todolist id={tl.id}
+                                    <Todolist
+                                              todolist={tl}
+                                              // id={tl.id}
+                                              // title={tl.title}
+                                              //filter={tl.filter}
+
                                               key={tl.id}
-                                              title={tl.title}
                                               tasks={tasksForTodolist}
                                               removeTask={removeTask}
                                               changeFilter={changeFilter}
@@ -179,7 +184,7 @@ let todolistId2 = v1()
                                               changeTaskStatus={changeTaskStatus}
                                               changeTaskTitle={changeTaskTitle}
                                               removeTodolist={removeTodolist}
-                                              filter={tl.filter}
+
                                               changeTodolistTitle={changeTodolistTitle}
 
                                     />
