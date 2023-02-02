@@ -1,8 +1,8 @@
 {
-  "homepage": "https://sergeisv113.github.io/it-incubator-todolist-ts/",
   "name": "it-incubator-todolist-ts",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://sergeisv113.github.io/it-incubator-todolist-ts/",
   "dependencies": {
     "@ant-design/icons": "4.7.0",
     "@emotion/react": "^11.9.0",
@@ -32,6 +32,7 @@
     "axios": "^0.27.2",
     "babel-loader": "^8.2.5",
     "formik": "^2.2.9",
+    "gh": "^2.8.9",
     "gh-pages": "^4.0.0",
     "lottie-react": "^2.3.1",
     "postcss-normalize": "^10.0.1",

@@ -6,6 +6,9 @@ import {Dispatch} from "redux";
 import {TaskStateType} from "../../trash/AppWithReducer";
 import { AppRootState, AppThunkType} from "../../API/store";
 import {setAppErrorAC, setAppStatusAC} from "../../app/app-reducer";
+import {Simulate} from "react-dom/test-utils";
+import error = Simulate.error;
+import {handleServerAppError, handleServerNetworkError} from "../../utils/error-utils";
 
 /*export type RemoveTaskActionType = {
     type: 'REMOVE-TASK',
@@ -213,13 +216,19 @@ export const addTaskTC = (title: string, todolistId: string): AppThunkType => di
                     dispatch(action)
                     dispatch(setAppStatusAC('succeeded'))// ne pokaz progress zagruzki
                 } else {
-                    if (res.data.messages.length) {
+                    handleServerAppError(res.data, dispatch)
+                   /* if (res.data.messages.length) {
                         dispatch(setAppErrorAC(res.data.messages[0]))
                     } else {
                         dispatch(setAppErrorAC('Some error occurred'))
                     }
-                    dispatch(setAppStatusAC('failed'))//
+                    dispatch(setAppStatusAC('failed'))//*/
                 }
+            })
+            .catch((error) => {
+                handleServerNetworkError(error, dispatch)
+                /*dispatch(setAppErrorAC(error.message))//esl error, to then ne rabotaet
+                dispatch(setAppStatusAC('failed'))//*/
             })
       }
 
@@ -241,9 +250,25 @@ export const updateTaskTC = (taskId: string, domainModel: UpdateDomainTaskModelT
             status: task.status,
             ...domainModel
         }
+
         todolistsApi.updateTask(todolistId, taskId, apiModel)
             .then((res) => {
-                dispatch(updateTaskAC(taskId, domainModel, todolistId))
+                    if (res.data.resultCode === 0) {
+                        dispatch(updateTaskAC(taskId, domainModel, todolistId))
+                } else {
+                        handleServerAppError(res.data, dispatch)
+                   /* ||   if (res.data.messages.length) {
+                        dispatch(setAppErrorAC(res.data.messages[0]))
+                    } else {
+                        dispatch(setAppErrorAC('Some error occurred'))
+                    }
+                    dispatch(setAppStatusAC('failed'))//*/
+                }
+            })
+            .catch((error) => {// dlinna title > 100
+                handleServerNetworkError(error, dispatch)
+                /* || dispatch(setAppErrorAC(error.message))//esl error, to then ne rabotaet
+                dispatch(setAppStatusAC('failed'))//*/
             })
 }
 

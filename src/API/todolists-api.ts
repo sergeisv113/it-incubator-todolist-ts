@@ -62,7 +62,7 @@ export const todolistsApi = {
 
     }
 
-    type ResponseType< D = {}> = {//D=data, D = {} po umolchaniju
+export  type ResponseType< D = {}> = {//D=data, D = {} po umolchaniju
         resultCode: number
         messages: Array<string>
             data: D
