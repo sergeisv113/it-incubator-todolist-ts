@@ -1,10 +1,11 @@
 
+
 import {AddTodolistActionType, RemoveTodolistActionType, SetTodolistsActionType} from "./todolists-reducer";
 import {TaskPriorities, TaskStatuses, TaskType, todolistsApi, UpdateTaskModelType} from "../../API/todolists-api";
 import {Dispatch} from "redux";
 import {TaskStateType} from "../../trash/AppWithReducer";
 import { AppRootState, AppThunkType} from "../../API/store";
-import {setErrorAC, setStatusErrorAC} from "../../app/app-reducer";
+import {setAppErrorAC, setAppStatusAC} from "../../app/app-reducer";
 
 /*export type RemoveTaskActionType = {
     type: 'REMOVE-TASK',
@@ -183,13 +184,13 @@ export const updateTaskAC = (taskId: string, model: UpdateDomainTaskModelType, t
 //thunk creator
 
 export const fetchTasksTC = (todolistId: string): AppThunkType => dispatch => {
-    dispatch(setStatusErrorAC('loading'))// pokaz progress zagruzki
+    dispatch(setAppStatusAC('loading'))// pokaz progress zagruzki
 
         todolistsApi.getTasks(todolistId)
             .then((res) => {
                 const tasks = res.data.items
                 dispatch(setTasksAC(tasks, todolistId))//sozdal tasku
-                dispatch(setStatusErrorAC('succeeded'))// ne pokaz progress zagruzki
+                dispatch(setAppStatusAC('succeeded'))// ne pokaz progress zagruzki
             })
 }
 
@@ -202,7 +203,7 @@ export const deleteTaskTC = (  taskId: string, todolistId: string): AppThunkType
 }
 
 export const addTaskTC = (title: string, todolistId: string): AppThunkType => dispatch => {
-    dispatch(setStatusErrorAC('loading'))// pokaz progress zagruzki
+    dispatch(setAppStatusAC('loading'))// pokaz progress zagruzki
 
         todolistsApi.createTask(todolistId, title)
             .then(res => {
@@ -210,14 +211,14 @@ export const addTaskTC = (title: string, todolistId: string): AppThunkType => di
                     const task = res.data.data.item
                     const action = addTaskAC(task)
                     dispatch(action)
-                    dispatch(setStatusErrorAC('succeeded'))// ne pokaz progress zagruzki
+                    dispatch(setAppStatusAC('succeeded'))// ne pokaz progress zagruzki
                 } else {
                     if (res.data.messages.length) {
-                        dispatch(setErrorAC(res.data.messages[0]))
+                        dispatch(setAppErrorAC(res.data.messages[0]))
                     } else {
-                        dispatch(setErrorAC('Some error occurred'))
+                        dispatch(setAppErrorAC('Some error occurred'))
                     }
-                    dispatch(setStatusErrorAC('failed'))//
+                    dispatch(setAppStatusAC('failed'))//
                 }
             })
       }

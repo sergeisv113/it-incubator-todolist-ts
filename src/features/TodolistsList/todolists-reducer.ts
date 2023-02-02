@@ -2,7 +2,7 @@ import {v1} from "uuid";
 import {todolistsApi, TodolistType} from "../../API/todolists-api";
 import {Dispatch} from "redux";
 import { AppThunkType} from "../../API/store";
-import {RequestStatusType, setStatusErrorAC} from "../../app/app-reducer";
+import {RequestStatusType, setAppStatusAC} from "../../app/app-reducer";
 
 /* type RemoveTodolistActionType = {
     type: 'REMOVE-TODOLIST',
@@ -71,6 +71,9 @@ export const todolistsReducer = (state: Array<TodolistDomainType> = initialState
             return [...state]*/
             return state.map(tl => tl.id === action.id ? {...tl, filter: action.filter} : tl)
         }
+        case "CHANGE-TODOLIST-ENTITY_STATUS": {
+            return state.map(tl => tl.id === action.todolistId ? {...tl, entityStatus: action.status} : tl)
+        }
         case 'SET-TODOLISTS':
             return action.todolists.map(tl => ({...tl, filter: "all", entityStatus: "idle"}))
 
@@ -101,6 +104,8 @@ export const changeTodolistFilterAC = (id: string, filter: FilterValuesType ): C
 
 export const setTodolistsAC = (todolists: Array<TodolistType>) => ({type: "SET-TODOLISTS", todolists}) as const
 
+export const changeTodolistEntityStatusAC = (todolistId: string, status: RequestStatusType) => ({type: "CHANGE-TODOLIST-ENTITY_STATUS",todolistId, status }) as const
+
 // export const ChangeTodolistFilterAC = (id: string, filter: FilterValuesType): ChangeTodolistFilterActionType => {
 //     return {type: "CHANGE-TODOLIST-FILTER", id: id, filter: filter}
 // }
@@ -116,12 +121,12 @@ export const setTodolistsAC = (todolists: Array<TodolistType>) => ({type: "SET-T
 //thunc-creator
 
 export const fetchTodolistsTC = (): AppThunkType => dispatch => {
-    dispatch(setStatusErrorAC('loading'))// pokaz progress zagruzki
+    dispatch(setAppStatusAC('loading'))// pokaz progress zagruzki
 
         todolistsApi.getTodolists()
             .then((res) => {
                 dispatch(setTodolistsAC(res.data))
-                dispatch(setStatusErrorAC('succeeded'))// ne pokaz progress zagruzki
+                dispatch(setAppStatusAC('succeeded'))// ne pokaz progress zagruzki
             })
 }
 
@@ -135,19 +140,23 @@ export const fetchTodolistsTC = (): AppThunkType => dispatch => {
 }*/
 
 export const removeTodolistsTC = (todolistId: string): AppThunkType => dispatch => {
+    dispatch(setAppStatusAC('loading'))// pokaz progress zagruzki
+    dispatch(changeTodolistEntityStatusAC(todolistId, 'loading'))// pokaz progress zagruzki
+
         todolistsApi.deleteTodolists(todolistId)
             .then((res) => {
                 dispatch(removeTodolistAC(todolistId))
+                dispatch(setAppStatusAC('succeeded'))// ne pokaz progress zagruzki
             })
 }
 
 export const addTodolistsTC = (title: string): AppThunkType => dispatch => {
-    dispatch(setStatusErrorAC('loading'))// pokaz progress zagruzki
+    dispatch(setAppStatusAC('loading'))// pokaz progress zagruzki
 
     todolistsApi.createTodolists(title)
             .then((res) => {
                 dispatch(addTodolistAC(res.data.data.item))
-                dispatch(setStatusErrorAC('succeeded'))// ne pokaz progress zagruzki
+                dispatch(setAppStatusAC('succeeded'))// ne pokaz progress zagruzki
             })
 }
 
@@ -170,6 +179,7 @@ export type RemoveTodolistActionType = ReturnType<typeof removeTodolistAC>
 export type AddTodolistActionType = ReturnType<typeof addTodolistAC>
 export type SetTodolistsActionType = ReturnType<typeof setTodolistsAC>
 
+
 export type TodolistsActionType =
 /* | RemoveTodolistActionType
  | AddTodolistActionType
@@ -180,6 +190,7 @@ export type TodolistsActionType =
     | ChangeTodolistFilterActionType
     | ReturnType<typeof changeTodolistTitleAC>
     | SetTodolistsActionType
+    |  ReturnType<typeof changeTodolistEntityStatusAC>
 
 export type FilterValuesType = "all" | "active" | "completed";
 export type TodolistDomainType = TodolistType & {

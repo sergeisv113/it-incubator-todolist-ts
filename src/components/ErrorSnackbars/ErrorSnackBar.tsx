@@ -6,7 +6,7 @@ import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import {useAppDispatch, useAppSelector} from "../../hooks/hooks";
 import {AppRootState} from "../../API/store";
 import {useDispatch, useSelector} from "react-redux";
-import {setErrorAC} from "../../app/app-reducer";
+import {setAppErrorAC} from "../../app/app-reducer";
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
     props,
@@ -31,7 +31,7 @@ export  function ErrorSnackbars()  {
         if (reason === 'clickaway') {
             return;
         }
-        dispatch(setErrorAC(null))//zanuli posle vuvoda error
+        dispatch(setAppErrorAC(null))//zanuli posle vuvoda error
         // setOpen(false);
     };
 
