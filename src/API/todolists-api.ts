@@ -52,6 +52,27 @@ export const todolistsApi = {
     },
 };
 
+export  type LoginParamsType = {
+    email: string
+    password: string
+    rememberMe: boolean
+    captcha?: string
+}
+export const loginAPI = {
+    login(data: LoginParamsType) {
+        const promice  = instance.post<ResponseType<{userId?: number}>>('auth/login', data)
+        return promice
+    },
+    logout() {
+        const promice  = instance.delete<ResponseType<{userId?: number}>>('auth/login')
+        return promice
+    },
+    me() {
+        const promice  = instance.get<ResponseType<{id: number, email: string, login: string}>>('auth/me')//id: number, email: string, login: string = iz backend
+        return promice
+    }
+}
+
 
     //types
     export  type TodolistType = {

@@ -6,10 +6,13 @@ import AppWithRedux from "./app/AppWithRedux";
 import {store} from "./API/store";
 import {Provider} from "react-redux";
 import AppWithReducer from "./trash/AppWithReducer";
+import {BrowserRouter} from "react-router-dom";
 
 ReactDOM.render(
    <Provider store={store}>
+       <BrowserRouter>
        <AppWithRedux />
+       </BrowserRouter>
    </Provider >
     ,  document.getElementById('root'));
 

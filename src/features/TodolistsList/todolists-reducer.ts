@@ -3,6 +3,7 @@ import {todolistsApi, TodolistType} from "../../API/todolists-api";
 import {Dispatch} from "redux";
 import { AppThunkType} from "../../API/store";
 import {RequestStatusType, setAppStatusAC} from "../../app/app-reducer";
+import {handleServerNetworkError} from "../../utils/error-utils";
 
 /* type RemoveTodolistActionType = {
     type: 'REMOVE-TODOLIST',
@@ -127,6 +128,9 @@ export const fetchTodolistsTC = (): AppThunkType => dispatch => {
             .then((res) => {
                 dispatch(setTodolistsAC(res.data))
                 dispatch(setAppStatusAC('succeeded'))// ne pokaz progress zagruzki
+            })
+            .catch(error => {
+                handleServerNetworkError(error, dispatch)
             })
 }
 

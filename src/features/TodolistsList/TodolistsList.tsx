@@ -16,6 +16,7 @@ import {Grid, Paper} from "@material-ui/core";
 import {AddItemForm} from "../../components/AddItemForm/AddItemForm";
 import {Todolist} from "./Todolist/Todolist";
 import {useAppDispatch, useAppSelector} from "../../hooks/hooks";
+import {Navigate} from "react-router-dom";
 
 type TodolistsListPropsType = {
     // todolist: Array<TodolistDomainType>
@@ -27,17 +28,16 @@ export type TasksStateType = {
 
 
 export const TodolistsList: React.FC<TodolistsListPropsType> = ({demo = false}) => {
-    const dispatch = useAppDispatch()//dispatchTasksReducier + dispatchTodolistsReducier
-
-
     /*const todolists = useSelector<AppRootState, Array<TodolistDomainType>>(state => state.todolists)
     const tasks = useSelector<AppRootState, TasksStateType>(state => state.tasks)*/
+
     const todolists = useAppSelector(state => state.todolists)
     const tasks = useAppSelector(state => state.tasks)
-
+    const isLoggedIn = useAppSelector(state => state.login.isLoggedIn)
+    const dispatch = useAppDispatch()//dispatchTasksReducier + dispatchTodolistsReducier
 
     useEffect(() => {
-        if (demo) {
+        if (demo || !isLoggedIn) {
             return
         }
         dispatch(fetchTodolistsTC())
@@ -110,7 +110,6 @@ export const TodolistsList: React.FC<TodolistsListPropsType> = ({demo = false}) 
     const changeFilter = useCallback((todolistId: string, filter: FilterValuesType,) => {
         const action = changeTodolistFilterAC(todolistId, filter)
         dispatch(action)
-
         /*let todolist = todolists.find(tl => tl.id === todolistId)
         if (todolist) {
             todolist.filter = value
@@ -122,8 +121,6 @@ export const TodolistsList: React.FC<TodolistsListPropsType> = ({demo = false}) 
         // const action = RemoveTodolistAC(todolistId)
         const thunk = removeTodolistsTC(todolistId)
         dispatch(thunk)
-
-
         /* let filteredTodolist = todolists.filter(tl => tl.id !== todolistId)
          setTodoList(filteredTodolist)
          delete tasks[todolistId]
@@ -133,7 +130,6 @@ export const TodolistsList: React.FC<TodolistsListPropsType> = ({demo = false}) 
     const addTodolist = useCallback((title: string) => {
         const thunk = addTodolistsTC(title)
         dispatch(thunk)
-
         /*  let todolist: TodoListType = {
               id: v1(),
               title: title,
@@ -151,7 +147,6 @@ export const TodolistsList: React.FC<TodolistsListPropsType> = ({demo = false}) 
         // dispatch(action)
         const thunk = changeTodolistsTitleTC(todolistId, newTitle)
         dispatch(thunk)
-
         /* const todolist = todolists.find(tl => tl.id === id)
          if (todolist) {
              todolist.title = newTitle
@@ -159,6 +154,9 @@ export const TodolistsList: React.FC<TodolistsListPropsType> = ({demo = false}) 
          }*/
     }, [])
 
+    if(!isLoggedIn) {
+        return <Navigate to={'/login'}/>
+    }
 
     return <>
         <Grid container style={{padding: '20px'}}>
@@ -176,7 +174,6 @@ export const TodolistsList: React.FC<TodolistsListPropsType> = ({demo = false}) 
                                 // id={tl.id}
                                 // title={tl.title}
                                 // filter={tl.filter}
-
                                 tasks={allTodolistTasks}
                                 removeTask={removeTask}
                                 changeFilter={changeFilter}

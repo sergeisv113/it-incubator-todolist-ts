@@ -283,12 +283,6 @@ export type UpdateDomainTaskModelType = {
     deadline?: string
 }
 export type TasksActionType =
-/* | RemoveTaskActionType
- | AddTaskActionType
- | ChangeTaskTitleActionType
- | ChangeTaskStatusActionType
- | AddTodolistActionType
-  | RemoveTodolistActionType*/
 
     | ReturnType<typeof removeTaskAC>
     | ReturnType<typeof addTaskAC>
