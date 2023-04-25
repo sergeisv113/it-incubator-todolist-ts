@@ -1,36 +1,33 @@
-import React, {ChangeEvent, useState} from "react";
-import {TextField} from "@material-ui/core";
+import React, {ChangeEvent, useState} from 'react';
+import {TextField} from "@mui/material";
+
 
 type EditableSpanPropsType = {
-    title: string
+    value: string
     onChange: (newValue: string) => void
+    disabled?: boolean
 }
 
-export const EditableSpan = React.memo((props: EditableSpanPropsType) => {
-    console.log('EditableSpan is called')
+export const EditableSpan = React.memo(function ({value, onChange, disabled = false}: EditableSpanPropsType) {
 
-let [editMode, setEditMode] = useState(false)
-let [title, setTitle] = useState('')
+    let [editMode, setEditMode] = useState(false);
+    let [title, setTitle] = useState(value);
 
-const activateEditMode = () => {
-    setEditMode(true)
-    setTitle(props.title)
-}
-const activateViewMode = () => {
-    setEditMode(false)
-    props.onChange(title)
-}
-const onChangeTitleHandler = (e: ChangeEvent<HTMLInputElement>) => setTitle(e.currentTarget.value)
+    const activateEditMode = () => {
+        if (!disabled) {
+            setEditMode(true)
+            setTitle(value)
+        }
+    }
+    const activateViewMode = () => {
+        setEditMode(false)
+        onChange(title)
+    }
+    const changeTitle = (e: ChangeEvent<HTMLInputElement>) => {
+        setTitle(e.currentTarget.value)
+    }
 
-    return (
-        // editMode ? <input value={props.title}//fixed value
-/*
-        editMode ? <input value={title}
-                          onChange={onChangeTitleHandler}
-                          onBlur={activateViewMode} autoFocus/> : <span onDoubleClick={activateEditMode}>{props.title}</span>
-*/
-        editMode ? <TextField value={title}
-                          onChange={onChangeTitleHandler}
-                          onBlur={activateViewMode} autoFocus/> : <span onDoubleClick={activateEditMode}>{props.title}</span>
-    )
+    return editMode
+        ? <TextField value={title} onChange={changeTitle} autoFocus onBlur={activateViewMode}/>
+        : <span onDoubleClick={activateEditMode}>{value}</span>
 })

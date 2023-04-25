@@ -3,6 +3,3 @@ module.exports = {
     testRegex: './*\\.test\\.js$',
     setupFilesAfterEnv: ['./setupTests.js']
 };
-
-// yarn test:integration
-//yarn run jest:integration --updateSnapshot

@@ -24,8 +24,9 @@ module.exports = {
   ],
   "framework": "@storybook/react"
 }*/
+/*
 module.exports = {
-  stories: ['../src/**/*.stories.tsx'],
+  stories: ['../src/!**!/!*.stories.tsx'],
   addons: ['@storybook/preset-create-react-app', '@storybook/addon-actions', '@storybook/addon-links', {
     name: '@storybook/addon-storysource',
     options: {
@@ -46,4 +47,20 @@ module.exports = {
   core: {
     builder: 'webpack5'
   }
-};
+};*/
+module.exports = {
+  "stories": [
+    "../src/**/*.stories.mdx",
+    "../src/**/*.stories.@(js|jsx|ts|tsx)"
+  ],
+  "addons": [
+    "@storybook/addon-links",
+    "@storybook/addon-essentials",
+    "@storybook/addon-interactions",
+    "@storybook/preset-create-react-app"
+  ],
+  "framework": "@storybook/react",
+  "core": {
+    "builder": "@storybook/builder-webpack5"
+  }
+}
