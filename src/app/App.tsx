@@ -1,66 +1,49 @@
-import React, {useEffect} from 'react'
-import './App.css';
-import AppBar from "@mui/material/AppBar";
-import Button from "@mui/material/Button";
+import React, {useCallback, useEffect} from 'react';
+import styles from './App.module.css';
+import {AppBarComponent} from "../features/AppBar/AppBar";
+import {TodolistsList} from "../features/TodolistsList/TodolistsList";
+import {Login} from "../features/Auth/Login";
+import {Navigate, Route, Routes} from "react-router-dom";
+import Container from "@mui/material/Container/Container";
+import {initializeAppTC} from "./app-reducer";
 import CircularProgress from "@mui/material/CircularProgress";
-import Container from "@mui/material/Container";
-import IconButton from "@mui/material/IconButton";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import {Menu} from "@mui/icons-material";
-import LinearProgress from '@mui/material/LinearProgress';
-import {TodolistsList} from "../features/TodolistsList/Todolists";
-import {useAppDispatch, useAppSelector} from "./store";
-import {ErrorSnackbar} from "../components/ErrorSnackbar/ErrorSnackbar";
-import {Login} from "../features/Login/Login";
-import {BrowserRouter, Navigate, Route, Routes, useRoutes} from "react-router-dom";
-import {initializeAppTC, logoutTC} from "../features/Login/auth-reducer";
+import {useAppDispatch} from "../common/hooks/useAppDispatch";
+import {Error404} from '../common/components/Error404/Error404';
+import {CustomizedSnackbars} from "../common/components/ErrorSnackbar/ErrorSnackbar";
+import {useSelector} from 'react-redux';
+import {appSelectors} from './index';
+import {createTodoListTC} from '../features/TodolistsList/todoLists-actions';
 
-type PropsType = {
-    demo?: boolean
-}
-
-function App({demo = false, ...props}: PropsType) {
+export const App = () => {
 
     const dispatch = useAppDispatch()
-    const isInitialized = useAppSelector(state => state.app.isInitialized)
-    const isLoggedIn = useAppSelector(state => state.auth.isLoggedIn)
-    const status = useAppSelector(state => state.app.status)
-    useEffect(() => {
-        if (!demo) {
-            dispatch(initializeAppTC())
-        }
-    }, [])
-    const onLogoutClickHandler = () => dispatch(logoutTC())
+    const isInitialized = useSelector(appSelectors.selectIsInitialized)
 
-    return (!isInitialized)
-        ? <div style={{position: 'fixed', top: '30%', textAlign: 'center', width: '100%'}}>
+    const newTodoListHandler = useCallback((titleValue: string) => dispatch(createTodoListTC({titleValue})), [dispatch])
+
+    useEffect(() => {
+        dispatch(initializeAppTC())
+    }, [])
+
+    if (!isInitialized) {
+        return <div
+            style={{position: 'fixed', top: '30%', textAlign: 'center', width: '100%'}}>
             <CircularProgress/>
         </div>
-        : <div className="App">
-            <AppBar position="static">
-                <Toolbar style={{'justifyContent': 'space-between'}}>
-                    <IconButton edge="start" color="inherit" aria-label="menu">
-                        <Menu/>
-                    </IconButton>
-                    <Typography variant="h6">
-                        Todolists
-                    </Typography>
-                    {isLoggedIn && <Button color="inherit" onClick={onLogoutClickHandler}>Logout</Button>}
-                </Toolbar>
-                {status === "loading" && <LinearProgress/>}
-            </AppBar>
-            <Container fixed>
+    }
 
+    return <>
+        <div className={styles.appComponent}>
+            <AppBarComponent newTitleCallBack={newTodoListHandler}/>
+            <CustomizedSnackbars/>
+            <Container fixed>
                 <Routes>
-                    <Route path={'/'} element={<TodolistsList demo={demo}/>}/>
+                    <Route path={'/'} element={<TodolistsList/>}/>
                     <Route path={'/login'} element={<Login/>}/>
-                    <Route path={'/404'} element={<h1 style={{'textAlign': 'center'}}>404: Page not found</h1>}/>
-                    <Route path={'*'} element={<Navigate to='/404'/>}/>
+                    <Route path={'/error404'} element={<Error404/>}/>
+                    <Route path={'*'} element={<Navigate to={'/error404'}/>}/>
                 </Routes>
-                    <ErrorSnackbar/>
             </Container>
         </div>
+    </>
 }
-
-export default App;

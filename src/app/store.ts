@@ -1,41 +1,31 @@
-import {tasksReducer} from '../features/TodolistsList/Todolist/Task/tasks-reducer';
-import {todolistsReducer} from '../features/TodolistsList/todolists-reducer';
-import {AnyAction, combineReducers} from 'redux';
-import thunk, {ThunkDispatch} from "redux-thunk";
-import {TypedUseSelectorHook, useDispatch, useSelector} from "react-redux";
+import {combineReducers} from "redux";
+import {todoListReducer} from "../features/TodolistsList/todoList-reducer";
+import {tasksReducer} from "../features/TodolistsList/TodoList/Tasks/tasks-reducer";
+import thunk, {ThunkAction} from 'redux-thunk'
 import {appReducer} from "./app-reducer";
-import {authReducer} from "../features/Login/auth-reducer";
+import {authReducer} from "../features/Auth/auth-reducer";
 import {configureStore} from "@reduxjs/toolkit";
 
-// объединяя reducer-ы с помощью combineReducers,
-// мы задаём структуру нашего единственного объекта-состояния
 const rootReducer = combineReducers({
-    tasks: tasksReducer,
-    todolists: todolistsReducer,
+    auth: authReducer,
     app: appReducer,
-    auth: authReducer
+    todoList: todoListReducer,
+    tasks: tasksReducer
 })
-// непосредственно создаём store
+
 export const store = configureStore({
     reducer: rootReducer,
-    middleware: [thunk] as const,
-
+    middleware: getDefaultMiddleware => getDefaultMiddleware().prepend(thunk)
 })
 
-// export type AppThunkType<ReturnType = void> = ThunkAction<ReturnType, AppRootStateType, unknown, GlobalActionsType>
+// type state
+export type AppRootStateType = ReturnType<typeof store.getState>
 
-//хуки
-export type AppThunkDispatchType = ThunkDispatch<AppRootStateType, unknown, AnyAction>
-export type RootReducerType = typeof rootReducer
+// all actions all app
+export type AppRootActionsType = any
 
-export const useAppDispatch = () => useDispatch<AppThunkDispatchType>()
-export const useAppSelector: TypedUseSelectorHook<AppRootStateType> = useSelector
+// типизация dispatch
+export type AppDispatch = typeof store.dispatch
 
-
-// определить автоматически тип всего объекта состояния
-// export type AppRootStateType = ReturnType<typeof store.getState>
-export type AppRootStateType = ReturnType<RootReducerType>
-
-// а это, чтобы можно было в консоли браузера обращаться к store в любой момент
-// @ts-ignore
-window.store = store;
+//type thunk esli ona return druguju thunk
+export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, AppRootStateType, unknown, AppRootActionsType>
